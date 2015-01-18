@@ -1,10 +1,9 @@
 package com.test.listsample;
 
-import android.support.v7.app.ActionBarActivity;
+import android.app.Activity;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -12,24 +11,31 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.List;
 
+import butterknife.ButterKnife;
+import butterknife.InjectView;
+import butterknife.OnClick;
 
-public class MainActivity extends ActionBarActivity implements View.OnClickListener{
+
+public class MainActivity extends Activity {
 
     static final String TAG = "listsample";
     static List<String> dataList = new ArrayList<String>();
     static ArrayAdapter<String> adapter;
 
+    @InjectView(R.id.listView)
     ListView listView;
-    Button addButton;
+    @InjectView(R.id.button2)
     Button clearButton;
+    @InjectView(R.id.button)
+    Button addButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        findViews();
-        setListners();
+        ButterKnife.inject(this);
         setAdapters();
+
     }
 
     @Override
@@ -54,15 +60,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         return super.onOptionsItemSelected(item);
     }
 
-    protected void findViews(){
-        listView = (ListView) findViewById(R.id.listView);
-        addButton = (Button) findViewById(R.id.button);
-        clearButton = (Button) findViewById(R.id.button2);
-    }
-
-    protected void setListners(){
-        addButton.setOnClickListener(this);
-        clearButton.setOnClickListener(this);
+    @OnClick({R.id.button, R.id.button2})
+    void onClick(Button button) {
+        switch (button.getId()) {
+            case R.id.button:
+                addItem();
+                break;
+            case R.id.button2:
+                clearItem();
+                break;
+        }
     }
 
     protected void addItem(){
@@ -79,17 +86,5 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 android.R.layout.simple_list_item_1,
                 dataList);
         listView.setAdapter(adapter);
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()){
-            case R.id.button :
-                addItem();
-                break;
-            case R.id.button2 :
-                clearItem();
-                break;
-        }
     }
 }
